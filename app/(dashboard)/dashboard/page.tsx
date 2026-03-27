@@ -47,31 +47,35 @@ const mockGoals = [
   },
 ];
 
+const responsejson =
+  '{\n  "meta": {\n    "titulo": "Aprender Next.js e Tailwind CSS",\n    "nivel": "Iniciante",\n    "semanas": 4,\n    "planoDeEstudos": [\n      {\n        "semana": 1,\n        "tarefas": [\n          {\n            "titulo": "Fundamentos do Tailwind CSS: Utility-first, containers e espaçamento",\n            "feito": false\n          },\n          {\n            "titulo": "Responsive Design e Estados (Hover, Focus, Active) com Tailwind",\n            "feito": false\n          },\n          {\n            "titulo": "Setup inicial do Next.js (create-next-app) e estrutura de pastas",\n            "feito": false\n          }\n        ]\n      },\n      {\n        "semana": 2,\n        "tarefas": [\n          {\n            "titulo": "Roteamento básico no Next.js (App Router: rotas e navegação)",\n            "feito": false\n          },\n          {\n            "titulo": "Criação de Layouts e Componentes reutilizáveis",\n            "feito": false\n          },\n          {\n            "titulo": "Estilização de componentes complexos com Tailwind CSS",\n            "feito": false\n          }\n        ]\n      },\n      {\n        "semana": 3,\n        "tarefas": [\n          {\n            "titulo": "Server Components vs Client Components no Next.js",\n            "feito": false\n          },\n          {\n            "titulo": "Data Fetching básico: buscando dados em Server Components",\n            "feito": false\n          },\n          {\n            "titulo": "Otimização de Imagens e Fontes com Next.js",\n            "feito": false\n          }\n        ]\n      },\n      {\n        "semana": 4,\n        "tarefas": [\n          {\n            "titulo": "Manipulação de formulários e Server Actions simples",\n            "feito": false\n          },\n          {\n            "titulo": "Desenvolvimento de um mini-projeto prático (ex: Portfolio ou Blog)",\n            "feito": false\n          },\n          {\n            "titulo": "Deploy da aplicação na Vercel",\n            "feito": false\n          }\n        ]\n      }\n    ]\n  }\n}';
 export default function DashboardPage() {
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [newPlan, setNewPlan] = useState(null);
+  async function createGoal() {
+    try {
+      const response = await fetch("/api/goal", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
 
-  // async function createGoal() {
-  //   try {
-  //     const response = await fetch("/api/goal", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
+        body: JSON.stringify({
+          prompt:
+            "Quero aprender Next.js e Tailwind em 1 mês. Meu nível é iniciante.",
+        }),
+      });
+      const json = await response.json();
 
-  //       body: JSON.stringify(
-  //         "Explique como a inteligência artificial funciona em poucas palavras",
-  //       ),
-  //     });
-  //     const json = await response.json();
-  //     console.log(json);
-  //   } catch (error) {
-  //     console.error("Erro na health check:", error);
-  //   }
-  // }
-  // useEffect(() => {
-  //   createGoal();
-  // }, []);
+      console.log("nova tarefa registrada:", json);
+    } catch (error) {
+      console.error("Erro", error);
+    }
+  }
+  useEffect(() => {
+    // createGoal();
+  }, []);
   const handleGeneratePlan = (e: React.FormEvent) => {
     e.preventDefault();
     if (!prompt.trim()) return;
@@ -84,6 +88,7 @@ export default function DashboardPage() {
       // Aqui você redirecionaria para a tela do plano gerado ou abriria um modal
     }, 3000);
   };
+  // console.log(newPlan);
 
   return (
     <div className="space-y-10 pb-10">
@@ -106,7 +111,7 @@ export default function DashboardPage() {
                 Qual é o seu próximo objetivo?
               </h2>
             </div>
-
+            <button onClick={createGoal}>Criar Plano</button>
             <form onSubmit={handleGeneratePlan} className="relative">
               <textarea
                 value={prompt}
