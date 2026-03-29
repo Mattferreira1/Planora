@@ -6,6 +6,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { prompt } = body;
+
     if (!prompt) {
       return NextResponse.json(
         { error: "Prompt is required" },

@@ -18,10 +18,25 @@ import { usePathname } from "next/navigation";
 
 // Itens de navegação da barra lateral
 const navItems = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Meus Planos", href: "/planos", icon: Target },
-  { name: "Biblioteca", href: "/biblioteca", icon: BookOpenText },
-  { name: "Configurações", href: "/configuracoes", icon: Settings },
+  {
+    name: "Dashboard",
+    href: "/dashboard",
+    icon: LayoutDashboard,
+    disabled: false,
+  },
+  { name: "Meus Planos", href: "/planos", icon: Target, disabled: true },
+  {
+    name: "Biblioteca",
+    href: "/biblioteca",
+    icon: BookOpenText,
+    disabled: true,
+  },
+  {
+    name: "Configurações",
+    href: "/configuracoes",
+    icon: Settings,
+    disabled: true,
+  },
 ];
 
 export default function DashboardLayout({
@@ -161,7 +176,7 @@ function SidebarContent({ pathname, closeSidebar }: SidebarContentProps) {
           return (
             <Link
               key={item.name}
-              href={item.href}
+              href={item.disabled ? "#" : item.href}
               onClick={closeSidebar}
               className={`group flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all duration-150 relative
                 ${

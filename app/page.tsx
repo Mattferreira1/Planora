@@ -7,6 +7,7 @@ import {
   ArrowRight,
   CheckCircle2,
 } from "lucide-react";
+import { redirect } from "next/navigation";
 
 const fadeIn: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -37,7 +38,10 @@ export default function LandingPage() {
             <Brain className="w-6 h-6 text-violet-500" />
             <span className="font-bold text-lg tracking-tight">Planora</span>
           </div>
-          <button className="text-sm font-medium text-zinc-300 hover:text-white transition-colors cursor-pointer">
+          <button
+            className="text-sm font-medium text-zinc-300 hover:text-white transition-colors cursor-pointer"
+            onClick={() => redirect("/login")}
+          >
             Entrar
           </button>
         </div>
@@ -102,9 +106,12 @@ export default function LandingPage() {
           <div className="rounded-xl bg-zinc-950 border border-zinc-800/50 h-100 w-full relative flex items-center justify-center overflow-hidden">
             {/* Elementos decorativos do mockup */}
             <div className="absolute top-0 w-full h-px bg-linear-to-r from-transparent via-violet-500/50 to-transparent"></div>
-            <p className="text-zinc-600 font-mono text-sm">
-              [ Preview do Dashboard de Estudos Aqui ]
-            </p>
+            {/* <p className="text-zinc-600 font-mono text-sm"> */}
+            <iframe
+              src="/previewMockedDashboard"
+              className="w-full h-full"
+            ></iframe>
+            {/* </p> */}
           </div>
         </motion.div>
       </section>

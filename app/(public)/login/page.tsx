@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Brain, Mail, Lock, Github, ArrowRight, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -146,12 +147,12 @@ export default function LoginPage() {
 
         <p className="text-center text-zinc-500 text-sm mt-8">
           Ainda não tem uma conta?{" "}
-          <a
-            href="#"
+          <span
+            onClick={() => redirect("/register")}
             className="text-violet-400 hover:text-violet-300 font-medium transition-colors"
           >
             Crie seu primeiro plano grátis
-          </a>
+          </span>
         </p>
       </motion.div>
     </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   Sparkles,
   Send,
@@ -11,82 +11,85 @@ import {
   Flame,
   MoreVertical,
   Loader2,
+  ChevronDown,
 } from "lucide-react";
+import { typeGoal } from "@/utils/types";
 
-// Dados simulados das metas atuais
-const mockGoals = [
-  {
-    id: 1,
-    title: "Dominar React Server Components",
-    category: "Programação",
-    progress: 65,
-    totalTasks: 24,
-    completedTasks: 15,
-    timeLeft: "2 semanas",
-    color: "from-blue-500 to-violet-500",
-  },
-  {
-    id: 2,
-    title: "Inglês para Entrevistas Tech",
-    category: "Idiomas",
-    progress: 30,
-    totalTasks: 40,
-    completedTasks: 12,
-    timeLeft: "1 mês",
-    color: "from-emerald-400 to-teal-500",
-  },
-  {
-    id: 3,
-    title: "Fundamentos de UX/UI",
-    category: "Design",
-    progress: 100,
-    totalTasks: 15,
-    completedTasks: 15,
-    timeLeft: "Concluído",
-    color: "from-violet-500 to-fuchsia-500",
-  },
-];
-
-const responsejson =
-  '{\n  "meta": {\n    "titulo": "Aprender Next.js e Tailwind CSS",\n    "nivel": "Iniciante",\n    "semanas": 4,\n    "planoDeEstudos": [\n      {\n        "semana": 1,\n        "tarefas": [\n          {\n            "titulo": "Fundamentos do Tailwind CSS: Utility-first, containers e espaçamento",\n            "feito": false\n          },\n          {\n            "titulo": "Responsive Design e Estados (Hover, Focus, Active) com Tailwind",\n            "feito": false\n          },\n          {\n            "titulo": "Setup inicial do Next.js (create-next-app) e estrutura de pastas",\n            "feito": false\n          }\n        ]\n      },\n      {\n        "semana": 2,\n        "tarefas": [\n          {\n            "titulo": "Roteamento básico no Next.js (App Router: rotas e navegação)",\n            "feito": false\n          },\n          {\n            "titulo": "Criação de Layouts e Componentes reutilizáveis",\n            "feito": false\n          },\n          {\n            "titulo": "Estilização de componentes complexos com Tailwind CSS",\n            "feito": false\n          }\n        ]\n      },\n      {\n        "semana": 3,\n        "tarefas": [\n          {\n            "titulo": "Server Components vs Client Components no Next.js",\n            "feito": false\n          },\n          {\n            "titulo": "Data Fetching básico: buscando dados em Server Components",\n            "feito": false\n          },\n          {\n            "titulo": "Otimização de Imagens e Fontes com Next.js",\n            "feito": false\n          }\n        ]\n      },\n      {\n        "semana": 4,\n        "tarefas": [\n          {\n            "titulo": "Manipulação de formulários e Server Actions simples",\n            "feito": false\n          },\n          {\n            "titulo": "Desenvolvimento de um mini-projeto prático (ex: Portfolio ou Blog)",\n            "feito": false\n          },\n          {\n            "titulo": "Deploy da aplicação na Vercel",\n            "feito": false\n          }\n        ]\n      }\n    ]\n  }\n}';
 export default function DashboardPage() {
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [newPlan, setNewPlan] = useState(null);
-  async function createGoal() {
+  const [plans, setPlans] = useState<typeGoal[]>([]);
+  const [openedTaskId, setOpenedTaskId] = useState<number | null>(null);
+
+  // async function createGoal() {
+  //   try {
+  //     const response = await fetch("/api/goal", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+
+  //       body: JSON.stringify({
+  //         prompt:
+  //           "Quero aprender Next.js e Tailwind em 1 mês. Meu nível é iniciante.",
+  //       }),
+  //     });
+  //     const json = await response.json();
+  //     if (!response.ok) {
+  //       alert(json.error || "Erro ao criar plano");
+  //       return;
+  //     }
+  //     console.log("nova tarefa registrada:", json);
+  //     setPlans((prev) => [...prev, json]);
+  //   } catch (error) {
+  //     console.error("Erro", error);
+  //   }
+  // }
+  // const handleGeneratePlan = (e: any) => {
+  //   e.preventDefault();
+  //   if (!prompt.trim()) return;
+  //   console.log(e.target.prompt.value);
+
+  //   setIsGenerating(true);
+  //   // Simula o tempo de resposta da IA
+  //   setTimeout(() => {
+  //     setIsGenerating(false);
+  //     setPrompt("");
+  //     // Aqui você redirecionaria para a tela do plano gerado ou abriria um modal
+  //   }, 3000);
+  // };
+  const handleGeneratePlan = async (e: any) => {
+    e.preventDefault();
+
+    if (!prompt) return;
+
     try {
+      setIsGenerating(true);
+      const userPrompt = prompt;
+      console.log(userPrompt);
+
       const response = await fetch("/api/goal", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-
-        body: JSON.stringify({
-          prompt:
-            "Quero aprender Next.js e Tailwind em 1 mês. Meu nível é iniciante.",
-        }),
+        body: JSON.stringify({ prompt: userPrompt }),
       });
+
       const json = await response.json();
 
-      console.log("nova tarefa registrada:", json);
+      if (!response.ok) {
+        alert(json.error || "Erro ao criar plano");
+        return;
+      }
+
+      console.log("novo plano:", json);
+      setPlans((prev) => [...prev, json]);
     } catch (error) {
       console.error("Erro", error);
-    }
-  }
-  useEffect(() => {
-    // createGoal();
-  }, []);
-  const handleGeneratePlan = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!prompt.trim()) return;
-
-    setIsGenerating(true);
-    // Simula o tempo de resposta da IA
-    setTimeout(() => {
+    } finally {
       setIsGenerating(false);
-      setPrompt("");
-      // Aqui você redirecionaria para a tela do plano gerado ou abriria um modal
-    }, 3000);
+    }
   };
   // console.log(newPlan);
 
@@ -111,7 +114,7 @@ export default function DashboardPage() {
                 Qual é o seu próximo objetivo?
               </h2>
             </div>
-            <button onClick={createGoal}>Criar Plano</button>
+            {/* <button onClick={createGoal}>Criar Plano</button> */}
             <form onSubmit={handleGeneratePlan} className="relative">
               <textarea
                 value={prompt}
@@ -156,13 +159,13 @@ export default function DashboardPage() {
         {[
           {
             label: "Metas Ativas",
-            value: "2",
+            value: plans.length.toString(),
             icon: Target,
             color: "text-blue-400",
           },
           {
             label: "Tarefas Hoje",
-            value: "5",
+            value: plans.length.toString(),
             icon: CheckCircle2,
             color: "text-violet-400",
           },
@@ -174,7 +177,7 @@ export default function DashboardPage() {
           },
           {
             label: "Ofensiva (Dias)",
-            value: "12",
+            value: "0",
             icon: Flame,
             color: "text-orange-400",
           },
@@ -211,24 +214,118 @@ export default function DashboardPage() {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {mockGoals.map((goal, idx) => (
+          {plans.map((goal, idx) => (
+            // <motion.div
+            //   key={idx}
+            //   initial={{ opacity: 0, scale: 0.95 }}
+            //   animate={{ opacity: 1, scale: 1 }}
+            //   transition={{ delay: 0.2 + idx * 0.1 }}
+            //   onClick={() => setOpenedTaskId(idx)}
+            //   className={`bg-zinc-900 border border-zinc-800 p-6 rounded-2xl hover:border-zinc-700 transition-colors group cursor-pointer ${openedTaskId === idx ? "col-span-2 lg:col-span-3" : ""}`}
+            // >
+            //   <div className="flex justify-between items-start mb-4">
+            //     <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-zinc-800 text-zinc-300">
+            //       {"teste"}
+            //     </span>
+            //     <button className="text-zinc-500 hover:text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity">
+            //       <MoreVertical className="w-5 h-5" />
+            //     </button>
+            //   </div>
+
+            //   <h4 className="text-lg font-bold text-zinc-100 mb-6 leading-tight group-hover:text-violet-300 transition-colors">
+            //     {goal.title}
+            //   </h4>
+
+            //   {/* Barra de Progresso */}
+            //   <div className="space-y-2 mb-6">
+            //     <div className="flex justify-between text-sm">
+            //       <span className="text-zinc-400">Progresso</span>
+            //       <span className="text-zinc-100 font-medium">
+            //         {/* {goal.progress}% */}
+            //         {"0"}%
+            //       </span>
+            //     </div>
+            //     <div className="h-2 w-full bg-zinc-950 rounded-full overflow-hidden border border-zinc-800">
+            //       <div
+            //         className={`h-full bg-linear-to-r rounded-full transition-all duration-1000 ease-out`}
+            //         style={{ width: `${0}%` }}
+            //         // style={{ width: `${goal.progress}%` }}
+            //       />
+            //     </div>
+            //   </div>
+
+            //   {/* Rodapé do Card */}
+            //   <div className="flex items-center justify-between text-sm border-t border-zinc-800 pt-4">
+            //     <div className="flex items-center gap-1.5 text-zinc-400">
+            //       <CheckCircle2 className="w-4 h-4" />
+            //       <span>
+            //         {goal.completedTasks}/{goal.totalTasks} tasks
+            //       </span>
+            //     </div>
+            //     <div className="flex items-center gap-1.5 text-zinc-400">
+            //       <Clock className="w-4 h-4" />
+            //       <span>{goal.timeLeft}</span>
+            //     </div>
+            //   </div>
+            //   {openedTaskId === idx &&
+            //     goal.studyPlan.map((week, index) => (
+            //       <>
+            //         <p key={index}>{week.week}</p>
+            //         <div>
+            //           {week.tasks.map((task, taskIdx) => (
+            //             <div key={taskIdx}>
+            //               <p>{task.title}</p>
+            //             </div>
+            //           ))}
+            //         </div>
+            //       </>
+            //     ))}
+            // </motion.div>
             <motion.div
-              key={goal.id}
+              key={idx}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 + idx * 0.1 }}
-              className="bg-zinc-900 border border-zinc-800 p-6 rounded-2xl hover:border-zinc-700 transition-colors group cursor-pointer"
+              // Removi o onClick daqui da raiz para evitar cliques acidentais
+              // enquanto o usuário lê ou interage com as tarefas internas.
+              className={`bg-zinc-900 border border-zinc-800 p-6 rounded-2xl transition-all duration-300 group overflow-hidden ${
+                openedTaskId === idx
+                  ? "col-span-1 md:col-span-2 lg:col-span-3 border-violet-500/50 shadow-[0_0_30px_rgba(124,58,237,0.1)]"
+                  : "hover:border-zinc-700"
+              }`}
             >
+              {/* Cabeçalho do Card */}
               <div className="flex justify-between items-start mb-4">
                 <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-zinc-800 text-zinc-300">
-                  {goal.category}
+                  {"teste"}
                 </span>
-                <button className="text-zinc-500 hover:text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <MoreVertical className="w-5 h-5" />
-                </button>
+
+                <div className="flex items-center gap-1">
+                  {/* NOVO: Botão de Expandir/Recolher */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpenedTaskId(openedTaskId === idx ? null : idx);
+                    }}
+                    className="p-1.5 rounded-lg text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 transition-all flex items-center justify-center"
+                    aria-label="Expandir plano"
+                  >
+                    <motion.div
+                      animate={{ rotate: openedTaskId === idx ? 180 : 0 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                    >
+                      <ChevronDown className="w-5 h-5" />
+                    </motion.div>
+                  </button>
+
+                  {/* Botão de Opções (More) */}
+                  <button className="p-1.5 rounded-lg text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 opacity-0 group-hover:opacity-100 transition-all">
+                    <MoreVertical className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
 
-              <h4 className="text-lg font-bold text-zinc-100 mb-6 leading-tight group-hover:text-violet-300 transition-colors">
+              <h4 className="text-lg font-bold text-zinc-100 mb-6 leading-tight">
                 {goal.title}
               </h4>
 
@@ -236,14 +333,12 @@ export default function DashboardPage() {
               <div className="space-y-2 mb-6">
                 <div className="flex justify-between text-sm">
                   <span className="text-zinc-400">Progresso</span>
-                  <span className="text-zinc-100 font-medium">
-                    {goal.progress}%
-                  </span>
+                  <span className="text-zinc-100 font-medium">{"0"}%</span>
                 </div>
                 <div className="h-2 w-full bg-zinc-950 rounded-full overflow-hidden border border-zinc-800">
                   <div
-                    className={`h-full bg-linear-to-r ${goal.color} rounded-full transition-all duration-1000 ease-out`}
-                    style={{ width: `${goal.progress}%` }}
+                    className="h-full bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-full transition-all duration-1000 ease-out"
+                    style={{ width: `${0}%` }}
                   />
                 </div>
               </div>
@@ -261,6 +356,50 @@ export default function DashboardPage() {
                   <span>{goal.timeLeft}</span>
                 </div>
               </div>
+
+              {/* CONTEÚDO EXPANDIDO: Cronograma Semanal */}
+              <AnimatePresence>
+                {openedTaskId === idx && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                    animate={{ opacity: 1, height: "auto", marginTop: 24 }}
+                    exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                    className="border-t border-zinc-800/80 pt-6"
+                  >
+                    <div className="space-y-6">
+                      {goal.studyPlan.map((week, index) => (
+                        <div key={index} className="space-y-3">
+                          {/* Título da Semana (Divisor visual) */}
+                          <div className="flex items-center gap-3">
+                            <div className="h-px bg-zinc-800 flex-1"></div>
+                            <h5 className="text-xs font-bold text-violet-400 uppercase tracking-widest">
+                              {week.week}
+                            </h5>
+                            <div className="h-px bg-zinc-800 flex-1"></div>
+                          </div>
+
+                          {/* Lista de Tarefas */}
+                          <div className="grid gap-2 lg:grid-cols-2">
+                            {week.tasks.map((task, taskIdx) => (
+                              <div
+                                key={taskIdx}
+                                className="flex items-start gap-3 p-3 rounded-xl bg-zinc-950/50 border border-zinc-800/50 hover:border-violet-500/30 hover:bg-zinc-800/50 transition-all group/task cursor-pointer"
+                              >
+                                {/* Falso Checkbox */}
+                                <div className="mt-0.5 w-4 h-4 rounded-full border-2 border-zinc-700 group-hover/task:border-violet-500 shrink-0 transition-colors"></div>
+
+                                <p className="text-sm text-zinc-300 leading-relaxed group-hover/task:text-zinc-100 transition-colors">
+                                  {task.title}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           ))}
         </div>
