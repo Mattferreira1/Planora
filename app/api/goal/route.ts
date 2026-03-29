@@ -23,9 +23,10 @@ export async function POST(request: Request) {
 
               OBJETO ESPERADO:
                 {
-                  title: string, // objetivo
+                  title: string, // objetivo ex: "Aprendendo..."
                   level: Iniciante | Intermediário | Avançado,
                   weeks: number,
+                  totalTasks:number,
                   studyPlan:[
                     {
                       week:1,
@@ -55,6 +56,7 @@ export async function POST(request: Request) {
       title: z.string(),
       level: z.enum(["Iniciante", "Intermediário", "Avançado"]),
       weeks: z.number(),
+      totalTasks: z.number(),
       studyPlan: z.array(
         z.object({
           week: z.number(),

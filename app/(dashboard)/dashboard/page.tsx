@@ -21,43 +21,6 @@ export default function DashboardPage() {
   const [plans, setPlans] = useState<typeGoal[]>([]);
   const [openedTaskId, setOpenedTaskId] = useState<number | null>(null);
 
-  // async function createGoal() {
-  //   try {
-  //     const response = await fetch("/api/goal", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-
-  //       body: JSON.stringify({
-  //         prompt:
-  //           "Quero aprender Next.js e Tailwind em 1 mês. Meu nível é iniciante.",
-  //       }),
-  //     });
-  //     const json = await response.json();
-  //     if (!response.ok) {
-  //       alert(json.error || "Erro ao criar plano");
-  //       return;
-  //     }
-  //     console.log("nova tarefa registrada:", json);
-  //     setPlans((prev) => [...prev, json]);
-  //   } catch (error) {
-  //     console.error("Erro", error);
-  //   }
-  // }
-  // const handleGeneratePlan = (e: any) => {
-  //   e.preventDefault();
-  //   if (!prompt.trim()) return;
-  //   console.log(e.target.prompt.value);
-
-  //   setIsGenerating(true);
-  //   // Simula o tempo de resposta da IA
-  //   setTimeout(() => {
-  //     setIsGenerating(false);
-  //     setPrompt("");
-  //     // Aqui você redirecionaria para a tela do plano gerado ou abriria um modal
-  //   }, 3000);
-  // };
   const handleGeneratePlan = async (e: any) => {
     e.preventDefault();
 
@@ -84,6 +47,7 @@ export default function DashboardPage() {
       }
 
       console.log("novo plano:", json);
+      localStorage.setItem("plans", JSON.stringify([...plans, json]));
       setPlans((prev) => [...prev, json]);
     } catch (error) {
       console.error("Erro", error);
@@ -92,7 +56,12 @@ export default function DashboardPage() {
     }
   };
   // console.log(newPlan);
-
+  useEffect(() => {
+    const storedPlans = localStorage.getItem("plans");
+    if (storedPlans) {
+      setPlans(JSON.parse(storedPlans));
+    }
+  }, []);
   return (
     <div className="space-y-10 pb-10">
       {/* Seção 1: Criador de Planos com IA */}
@@ -215,82 +184,14 @@ export default function DashboardPage() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {plans.map((goal, idx) => (
-            // <motion.div
-            //   key={idx}
-            //   initial={{ opacity: 0, scale: 0.95 }}
-            //   animate={{ opacity: 1, scale: 1 }}
-            //   transition={{ delay: 0.2 + idx * 0.1 }}
-            //   onClick={() => setOpenedTaskId(idx)}
-            //   className={`bg-zinc-900 border border-zinc-800 p-6 rounded-2xl hover:border-zinc-700 transition-colors group cursor-pointer ${openedTaskId === idx ? "col-span-2 lg:col-span-3" : ""}`}
-            // >
-            //   <div className="flex justify-between items-start mb-4">
-            //     <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-zinc-800 text-zinc-300">
-            //       {"teste"}
-            //     </span>
-            //     <button className="text-zinc-500 hover:text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity">
-            //       <MoreVertical className="w-5 h-5" />
-            //     </button>
-            //   </div>
-
-            //   <h4 className="text-lg font-bold text-zinc-100 mb-6 leading-tight group-hover:text-violet-300 transition-colors">
-            //     {goal.title}
-            //   </h4>
-
-            //   {/* Barra de Progresso */}
-            //   <div className="space-y-2 mb-6">
-            //     <div className="flex justify-between text-sm">
-            //       <span className="text-zinc-400">Progresso</span>
-            //       <span className="text-zinc-100 font-medium">
-            //         {/* {goal.progress}% */}
-            //         {"0"}%
-            //       </span>
-            //     </div>
-            //     <div className="h-2 w-full bg-zinc-950 rounded-full overflow-hidden border border-zinc-800">
-            //       <div
-            //         className={`h-full bg-linear-to-r rounded-full transition-all duration-1000 ease-out`}
-            //         style={{ width: `${0}%` }}
-            //         // style={{ width: `${goal.progress}%` }}
-            //       />
-            //     </div>
-            //   </div>
-
-            //   {/* Rodapé do Card */}
-            //   <div className="flex items-center justify-between text-sm border-t border-zinc-800 pt-4">
-            //     <div className="flex items-center gap-1.5 text-zinc-400">
-            //       <CheckCircle2 className="w-4 h-4" />
-            //       <span>
-            //         {goal.completedTasks}/{goal.totalTasks} tasks
-            //       </span>
-            //     </div>
-            //     <div className="flex items-center gap-1.5 text-zinc-400">
-            //       <Clock className="w-4 h-4" />
-            //       <span>{goal.timeLeft}</span>
-            //     </div>
-            //   </div>
-            //   {openedTaskId === idx &&
-            //     goal.studyPlan.map((week, index) => (
-            //       <>
-            //         <p key={index}>{week.week}</p>
-            //         <div>
-            //           {week.tasks.map((task, taskIdx) => (
-            //             <div key={taskIdx}>
-            //               <p>{task.title}</p>
-            //             </div>
-            //           ))}
-            //         </div>
-            //       </>
-            //     ))}
-            // </motion.div>
             <motion.div
               key={idx}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 + idx * 0.1 }}
-              // Removi o onClick daqui da raiz para evitar cliques acidentais
-              // enquanto o usuário lê ou interage com as tarefas internas.
               className={`bg-zinc-900 border border-zinc-800 p-6 rounded-2xl transition-all duration-300 group overflow-hidden ${
                 openedTaskId === idx
-                  ? "col-span-1 md:col-span-2 lg:col-span-3 border-violet-500/50 shadow-[0_0_30px_rgba(124,58,237,0.1)]"
+                  ? "col-span-1 md:col-span-2 lg:col-span-3 border-violet-500/50 shadow-[0_0_30px_rgba(124,58,237,0.1)] order-first"
                   : "hover:border-zinc-700"
               }`}
             >
@@ -337,7 +238,7 @@ export default function DashboardPage() {
                 </div>
                 <div className="h-2 w-full bg-zinc-950 rounded-full overflow-hidden border border-zinc-800">
                   <div
-                    className="h-full bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-full transition-all duration-1000 ease-out"
+                    className="h-full bg-linear-to-r from-violet-500 to-fuchsia-500 rounded-full transition-all duration-1000 ease-out"
                     style={{ width: `${0}%` }}
                   />
                 </div>
@@ -348,13 +249,15 @@ export default function DashboardPage() {
                 <div className="flex items-center gap-1.5 text-zinc-400">
                   <CheckCircle2 className="w-4 h-4" />
                   <span>
-                    {goal.completedTasks}/{goal.totalTasks} tasks
+                    {/* {goal.completedTasks}/{goal.totalTasks} tasks  */}
+                    0/{goal.totalTasks} tasks
+                    {/* 5/10 tasks */}
                   </span>
                 </div>
-                <div className="flex items-center gap-1.5 text-zinc-400">
+                {/* <div className="flex items-center gap-1.5 text-zinc-400">
                   <Clock className="w-4 h-4" />
                   <span>{goal.timeLeft}</span>
-                </div>
+                </div> */}
               </div>
 
               {/* CONTEÚDO EXPANDIDO: Cronograma Semanal */}

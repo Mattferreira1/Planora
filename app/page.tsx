@@ -86,7 +86,10 @@ export default function LandingPage() {
             variants={fadeIn}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <button className="flex items-center gap-2 px-8 py-4 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-semibold transition-all shadow-[0_0_20px_rgba(124,58,237,0.3)] hover:shadow-[0_0_30px_rgba(124,58,237,0.5)] active:scale-95">
+            <button
+              onClick={() => redirect("dashboard")}
+              className="flex items-center gap-2 px-8 py-4 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-semibold transition-all shadow-[0_0_20px_rgba(124,58,237,0.3)] hover:shadow-[0_0_30px_rgba(124,58,237,0.5)] active:scale-95"
+            >
               Começar Agora
               <ArrowRight className="w-5 h-5" />
             </button>

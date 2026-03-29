@@ -24,19 +24,19 @@ const navItems = [
     icon: LayoutDashboard,
     disabled: false,
   },
-  { name: "Meus Planos", href: "/planos", icon: Target, disabled: true },
-  {
-    name: "Biblioteca",
-    href: "/biblioteca",
-    icon: BookOpenText,
-    disabled: true,
-  },
-  {
-    name: "Configurações",
-    href: "/configuracoes",
-    icon: Settings,
-    disabled: true,
-  },
+  // { name: "Meus Planos", href: "/planos", icon: Target, disabled: true },
+  // {
+  //   name: "Biblioteca",
+  //   href: "/biblioteca",
+  //   icon: BookOpenText,
+  //   disabled: true,
+  // },
+  // {
+  //   name: "Configurações",
+  //   href: "/configuracoes",
+  //   icon: Settings,
+  //   disabled: true,
+  // },
 ];
 
 export default function DashboardLayout({
@@ -157,7 +157,7 @@ function SidebarContent({ pathname, closeSidebar }: SidebarContentProps) {
     <>
       {/* Logo */}
       <Link
-        href="/dashboard"
+        href="/"
         className="flex items-center gap-3 mb-12"
         onClick={closeSidebar}
       >
