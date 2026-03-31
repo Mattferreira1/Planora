@@ -135,7 +135,7 @@ export default function DashboardPage() {
               <button
                 type="submit"
                 disabled={true}
-                className="absolute bottom-4 right-4 p-3 rounded-lg bg-violet-600 text-white hover:bg-violet-700 disabled:bg-zinc-800 disabled:text-zinc-500 transition-all active:scale-95"
+                className="absolute bottom-4 right-4 p-3 rounded-lg bg-violet-600 text-white cursor-not-allowed hover:bg-violet-700 disabled:bg-zinc-800 disabled:text-zinc-500 transition-all active:scale-95"
               >
                 {isGenerating ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
