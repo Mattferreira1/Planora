@@ -113,10 +113,7 @@ export default function LandingPage() {
             {/* Elementos decorativos do mockup */}
             <div className="absolute top-0 w-full h-px bg-linear-to-r from-transparent via-violet-500/50 to-transparent"></div>
             {/* <p className="text-zinc-600 font-mono text-sm"> */}
-            <iframe
-              src="/previewMockedDashboard"
-              className="w-full h-full"
-            ></iframe>
+            <iframe src="/previewDashboard" className="w-full h-full"></iframe>
             {/* </p> */}
           </div>
         </motion.div>
