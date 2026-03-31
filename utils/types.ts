@@ -11,5 +11,6 @@ export type typeGoal = {
   level: string;
   weeks: number;
   totalTasks: number;
+  completedTasks: number;
   studyPlan: Array<typeStudyWeek>;
 };

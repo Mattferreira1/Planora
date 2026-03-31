@@ -1,4 +1,4 @@
-import GeminiAI from "@/utils/database/aiAgent/gemini/gemini";
+import GeminiAI from "@/utils/aiAgent/gemini/gemini";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -24,9 +24,10 @@ export async function POST(request: Request) {
               OBJETO ESPERADO:
                 {
                   title: string, // objetivo ex: "Aprendendo..."
-                  level: Iniciante | Intermediário | Avançado,
-                  weeks: number,
+                  level: Iniciante | Intermediário | Avançado // valor padrão Iniciante,
+                  weeks: number // valor padrão de 8,
                   totalTasks:number,
+                  completedTasks: 0;
                   studyPlan:[
                     {
                       week:1,
@@ -43,7 +44,10 @@ export async function POST(request: Request) {
                     }
                   ]
                 }
-              
+              Se não for possível criar um plano de estudos com base no texto, retorne um json com a seguinte estrutura:
+                {
+                  error: string // mensagem de erro explicando o motivo
+                }
 
               OBS: Não invente tópicos e informe apenas os relevantes, RETORNE APENAS O JSON VÁLIDO (parseável com JSON.parse), SEM NENHUM TEXTO EXPLICANDO O PLANO DE ESTUDOS.
 
@@ -52,11 +56,17 @@ export async function POST(request: Request) {
               ${prompt}
               `,
     });
+    const responseJSON = JSON.parse(response.text!);
+    if (responseJSON.error) {
+      return NextResponse.json({ error: responseJSON.error }, { status: 400 });
+    }
+
     const Goal = z.object({
       title: z.string(),
       level: z.enum(["Iniciante", "Intermediário", "Avançado"]),
       weeks: z.number(),
       totalTasks: z.number(),
+      completedTasks: z.number(),
       studyPlan: z.array(
         z.object({
           week: z.number(),
@@ -70,7 +80,7 @@ export async function POST(request: Request) {
       ),
     });
 
-    const parsed = Goal.safeParse(JSON.parse(response.text!));
+    const parsed = Goal.safeParse(responseJSON);
     if (!parsed.success) {
       console.error("Failed to parse response:", parsed.error);
       return NextResponse.json(
@@ -78,7 +88,6 @@ export async function POST(request: Request) {
         { status: 500 },
       );
     }
-    console.log("Tipos conferem");
 
     return NextResponse.json(parsed.data);
   } catch (e) {

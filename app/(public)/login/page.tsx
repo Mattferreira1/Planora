@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Brain, Mail, Lock, Github, ArrowRight, Loader2 } from "lucide-react";
+import { Brain, Mail, Lock, ArrowRight, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -18,7 +18,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-zinc-950 flex flex-col justify-center items-center p-6 selection:bg-violet-500/30">
       {/* Elemento decorativo de fundo */}
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-violet-600/10 blur-[120px] rounded-full pointer-events-none"></div>
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 bg-violet-600/10 blur-[120px] rounded-full pointer-events-none"></div>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -77,11 +77,11 @@ export default function LoginPage() {
           </div> */}
 
           <div className="relative flex items-center py-4">
-            <div className="flex-grow border-t border-zinc-800"></div>
-            <span className="flex-shrink-0 mx-4 text-zinc-500 text-xs uppercase tracking-wider">
+            <div className="grow border-t border-zinc-800"></div>
+            <span className="shrink-0 mx-4 text-zinc-500 text-xs uppercase tracking-wider">
               ou use seu email
             </span>
-            <div className="flex-grow border-t border-zinc-800"></div>
+            <div className="grow border-t border-zinc-800"></div>
           </div>
 
           {/* Formulário Tradicional */}

@@ -93,7 +93,10 @@ export default function LandingPage() {
               Começar Agora
               <ArrowRight className="w-5 h-5" />
             </button>
-            <button className="px-8 py-4 rounded-xl bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-300 font-semibold transition-all active:scale-95">
+            <button
+              onClick={() => redirect("/about")}
+              className="px-8 py-4 rounded-xl bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-300 font-semibold transition-all active:scale-95"
+            >
               Ver como funciona
             </button>
           </motion.div>
@@ -222,7 +225,7 @@ export default function LandingPage() {
 
       {/* CTA Section */}
       <section className="py-24 px-6">
-        <div className="max-w-4xl mx-auto rounded-3xl bg-gradient-to-br from-zinc-900 to-zinc-950 border border-zinc-800 p-12 text-center relative overflow-hidden">
+        <div className="max-w-4xl mx-auto rounded-3xl bg-linear-to-br from-zinc-900 to-zinc-950 border border-zinc-800 p-12 text-center relative overflow-hidden">
           <div className="absolute top-0 right-0 -mt-20 -mr-20 w-64 h-64 bg-violet-600 blur-[120px] opacity-30"></div>
           <h2 className="text-3xl md:text-5xl font-bold text-zinc-100 mb-6 relative z-10">
             Pronto para parar de planejar e começar a agir?
