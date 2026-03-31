@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Planora: Estudos com IA
 
-## Getting Started
+## O Problema
 
-First, run the development server:
+Aprender algo novo nunca foi tão acessível — mas, ao mesmo tempo, nunca foi tão confuso.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Cursos, vídeos, artigos… informação demais e direção de menos.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Muitas pessoas começam motivadas, mas desistem no meio do caminho por não saberem exatamente o que estudar, quando estudar e como evoluir.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
+## A Solução
 
-To learn more about Next.js, take a look at the following resources:
+O Planora resolve isso.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+É uma plataforma de autodesenvolvimento que utiliza inteligência artificial para transformar um objetivo em um plano claro, estruturado e executável.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Você diz o que quer aprender, seu nível e quanto tempo tem disponível — e o Planora gera automaticamente um cronograma com tarefas semanais personalizadas.
 
-## Deploy on Vercel
+Sem sobrecarga. Sem dúvida. Apenas execução.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Demonstração
+
+O uso é simples:
+
+Você acessa o dashboard, descreve seu objetivo em um campo de texto — por exemplo: “Quero aprender React em 2 meses” — e a IA gera um plano de estudos completo.
+
+Esse plano já vem organizado em semanas, com tarefas prontas para serem executadas.
+
+E ao longo do tempo, você pode acompanhar seu progresso, manter consistência e evoluir de forma clara.
+
+
+
+## Encerramento
+
+O Planora não é apenas sobre estudar mais.
+É sobre estudar com direção.
+Transformar intenção em ação — e ação em resultado.
+
+
+## Deploy
+
+https://planora-puce.vercel.app/
+
+## Deploy com dados mockados para testes
+
+https://planora-puce.vercel.app/previewMockedDashboard
