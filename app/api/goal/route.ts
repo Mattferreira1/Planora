@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     const response = await GeminiAI.models.generateContent({
       model: "gemini-3-flash-preview",
       contents: `
-              Supondo que você é um TECH LEAD.
+              Supondo que você é um TECH LEAD, Orientador ou Mentor.
 
               abaixo irei enviar um texto onde eu cito um objetivo/meta, nível e em quanto tempo tenho para alcançar essa meta, analise o texto e crie um plano de estudos baseado em semanas e retorne um json comforme o exemplo abaixo:
 

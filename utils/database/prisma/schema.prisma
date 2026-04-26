@@ -8,42 +8,51 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String?
-  email     String   @unique
-  createdAt DateTime @default(now())
-  password  String?
-  goals     Goal[]
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String @unique
+  password String
+
+  goals Goal[]
+
+  @@map("users")
 }
 
 model Goal {
-  id        String   @id @default(uuid())
-  title     String
-  level     String
-  weeks     Int
+  id             Int    @id @default(autoincrement())
+  title          String
+  level          String
+  totalWeeks     Int
+  totalTasks     Int    @default(0)
+  completedTasks Int    @default(0)
 
-  createdAt DateTime @default(now())
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  weeks Week[]
 
-  weeksRel  Week[]
+  @@map("goals")
 }
+
 model Week {
-  id        String @id @default(uuid())
-  number    Int    // semana 1, 2, 3...
+  id   Int @id @default(autoincrement())
+  week Int
 
-  goalId    String
-  goal      Goal   @relation(fields: [goalId], references: [id])
+  goalId Int
+  goal   Goal @relation(fields: [goalId], references: [id], onDelete: Cascade)
 
-  tasks     Task[]
+  tasks Task[]
+
+  @@map("weeks")
 }
-model Task {
-  id        String  @id @default(uuid())
-  title     String
-  done      Boolean @default(false)
-  order     Int
 
-  weekId    String
-  week      Week    @relation(fields: [weekId], references: [id])
+model Task {
+  id    Int     @id @default(autoincrement())
+  title String
+  done  Boolean @default(false)
+
+  weekId Int
+  week   Week @relation(fields: [weekId], references: [id], onDelete: Cascade)
+
+  @@map("tasks")
 }
