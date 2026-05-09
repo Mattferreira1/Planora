@@ -149,7 +149,7 @@ export default function LoginPage() {
           Ainda não tem uma conta?{" "}
           <span
             onClick={() => redirect("/register")}
-            className="text-violet-400 hover:text-violet-300 font-medium transition-colors"
+            className="text-violet-400 hover:text-violet-300 font-medium transition-colors cursor-pointer"
           >
             Crie seu primeiro plano grátis
           </span>

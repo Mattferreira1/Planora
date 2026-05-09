@@ -1,41 +1,83 @@
 "use client";
 
-import { useState } from "react";
+import { FormEvent, useContext, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Brain,
   User,
   Mail,
   Lock,
-  Github,
+  // Github,
   ArrowRight,
   Loader2,
+  Eye,
+  EyeClosed,
 } from "lucide-react";
 import Link from "next/link";
+import { UserContext } from "@/utils/contexts/userContext";
+import { redirect } from "next/navigation";
+import { user } from "@/utils/types";
+import FormInput from "./components/formInput";
 
 export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  const [showPassword, setShowPassword] = useState(false);
+  const userContext = useContext(UserContext);
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    const eventTarget = e.target;
     const userRegisterData = {
-      name: e.target.username.value,
-      email: e.target.email.value,
-      password: e.target.password.value,
-      confirmPassword: e.target.confirmPassword.value,
+      name: eventTarget.name.value.trim(),
+      email: eventTarget.email.value.trim(),
+      password: eventTarget.password.value,
+      confirmPassword: eventTarget.confirmPassword.value,
     };
-    console.log(userRegisterData);
-    if (userRegisterData.password !== userRegisterData.confirmPassword) {
-      setError("As senhas não coincidem");
-      return;
-    }
-
+    const isDataValid = validateData(userRegisterData);
+    if (!isDataValid) return;
+    setError(null);
     setIsLoading(true);
-    // Simulação de delay da API de cadastro
+    const response = await fetch("/api/users", {
+      method: "POST",
+      body: JSON.stringify(userRegisterData),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log(await response.json());
+
     setTimeout(() => setIsLoading(false), 2000);
   };
+  function validateData(
+    RegisterInputData: user & { confirmPassword: string },
+  ): boolean {
+    const userRegisterData = RegisterInputData;
+    if (userRegisterData.password !== userRegisterData.confirmPassword) {
+      setError("As senhas não coincidem");
+      return false;
+    }
+    const name = userRegisterData.name;
+    const email = userRegisterData.email;
+    const password = userRegisterData.password;
 
+    const nameIsValid =
+      name.length > 2 && name.length <= 100 && /^[A-Za-zÀ-ÿ\s]+$/.test(name);
+    const emailIsValid =
+      email.length > 5 &&
+      email.length <= 255 &&
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    const passwordIsValid =
+      password.length >= 8 &&
+      password.length <= 72 &&
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(password);
+
+    if (!nameIsValid || !emailIsValid || !passwordIsValid) {
+      setError("Dados de cadastro inválidos");
+      return false;
+    }
+    return true;
+  }
   return (
     <div className="min-h-screen bg-zinc-950 flex flex-col justify-center items-center p-6 selection:bg-violet-500/30">
       {/* Elemento decorativo de fundo */}
@@ -69,33 +111,33 @@ export default function RegisterPage() {
 
           {/* Botões Sociais */}
           {/* <div className="flex flex-col gap-3 mb-6">
-            <button className="flex items-center justify-center gap-3 w-full px-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800 hover:bg-zinc-800 hover:border-zinc-700 text-zinc-300 font-medium transition-all active:scale-[0.98]">
-              <svg className="w-5 h-5" viewBox="0 0 24 24">
-                <path
-                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                  fill="#4285F4"
-                />
-                <path
-                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                  fill="#34A853"
-                />
-                <path
-                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                  fill="#FBBC05"
-                />
-                <path
-                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                  fill="#EA4335"
-                />
-              </svg>
-              Cadastrar com Google
-            </button>
+              <button className="flex items-center justify-center gap-3 w-full px-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800 hover:bg-zinc-800 hover:border-zinc-700 text-zinc-300 font-medium transition-all active:scale-[0.98]">
+                <svg className="w-5 h-5" viewBox="0 0 24 24">
+                  <path
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    fill="#4285F4"
+                  />
+                  <path
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    fill="#34A853"
+                  />
+                  <path
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                    fill="#FBBC05"
+                  />
+                  <path
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                    fill="#EA4335"
+                  />
+                </svg>
+                Cadastrar com Google
+              </button>
 
-            <button className="flex items-center justify-center gap-3 w-full px-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800 hover:bg-zinc-800 hover:border-zinc-700 text-zinc-300 font-medium transition-all active:scale-[0.98]">
-              <Github className="w-5 h-5" />
-              Cadastrar com GitHub
-            </button>
-          </div> */}
+              <button className="flex items-center justify-center gap-3 w-full px-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800 hover:bg-zinc-800 hover:border-zinc-700 text-zinc-300 font-medium transition-all active:scale-[0.98]">
+                <Github className="w-5 h-5" />
+                Cadastrar com GitHub
+              </button>
+            </div> */}
 
           <div className="relative flex items-center py-4">
             <div className="grow border-t border-zinc-800"></div>
@@ -120,16 +162,16 @@ export default function RegisterPage() {
                   type="text"
                   required
                   placeholder="Seu nome"
-                  id="username"
-                  name="username"
+                  id="name"
+                  name="name"
                   className="w-full pl-10 pr-4 py-3 bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500 transition-all"
                 />
               </div>
             </div>
 
             {/* Campo Email */}
-            <div className="space-y-1">
-              <label className="text-sm font-medium text-zinc-400 pl-1">
+            {/* <div className="space-y-1"> */}
+            {/* <label className="text-sm font-medium text-zinc-400 pl-1">
                 Email
               </label>
               <div className="relative">
@@ -144,8 +186,21 @@ export default function RegisterPage() {
                   placeholder="seu@email.com"
                   className="w-full pl-10 pr-4 py-3 bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500 transition-all"
                 />
-              </div>
-            </div>
+              </div> */}
+            <FormInput.Root>
+              <FormInput.Label htmlFor="email">Email</FormInput.Label>
+              <FormInput.InputArea>
+                <FormInput.Icon icon={Mail} />
+                <FormInput.Control
+                  type="email"
+                  required
+                  name="email"
+                  id="email"
+                  placeholder="seu@email.com"
+                />
+              </FormInput.InputArea>
+            </FormInput.Root>
+            {/* </div> */}
 
             {/* Campo Senha */}
             <div className="space-y-1">
@@ -157,13 +212,24 @@ export default function RegisterPage() {
                   <Lock className="h-5 w-5 text-zinc-500" />
                 </div>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   required
                   name="password"
                   id="password"
-                  placeholder="Mínimo 8 caracteres"
+                  placeholder="Digite uma senha"
                   className="w-full pl-10 pr-4 py-3 bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500 transition-all"
                 />
+                {showPassword ? (
+                  <Eye
+                    className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-500 cursor-pointer"
+                    onClick={() => setShowPassword(!showPassword)}
+                  />
+                ) : (
+                  <EyeClosed
+                    className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-500 cursor-pointer"
+                    onClick={() => setShowPassword(!showPassword)}
+                  />
+                )}
               </div>
             </div>
 
@@ -176,14 +242,26 @@ export default function RegisterPage() {
                   <Lock className="h-5 w-5 text-zinc-500" />
                 </div>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   required
                   name="confirmPassword"
                   id="confirmPassword"
-                  placeholder="Mínimo 8 caracteres"
+                  placeholder="Digite novamente sua senha"
                   className="w-full pl-10 pr-4 py-3 bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500 transition-all"
                 />
               </div>
+              <legend className="text-sm font-medium text-zinc-400 pl-1">
+                No mínimo 8 caracteres
+              </legend>
+              <legend className="text-sm font-medium text-zinc-400 pl-1">
+                Pelo menos uma letra maiúscula
+              </legend>
+              <legend className="text-sm font-medium text-zinc-400 pl-1">
+                No mínimo 8 caracteres
+              </legend>
+              <legend className="text-sm font-medium text-zinc-400 pl-1">
+                No mínimo 1 caractere especial
+              </legend>
             </div>
             {error && (
               <div className="space-y-1">

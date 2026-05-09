@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Brain,
@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import UserContextProvider, { UserContext } from "@/utils/contexts/userContext";
 
 // Itens de navegação da barra lateral
 const navItems = [
@@ -46,7 +47,7 @@ export default function DashboardLayout({
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const pathname = usePathname();
-
+  const userContext = useContext(UserContext);
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 flex font-sans selection:bg-violet-500/30">
       {/* Barra Lateral (Sidebar) - Desktop */}
@@ -123,7 +124,7 @@ export default function DashboardLayout({
               </div>
               <div className="hidden sm:block">
                 <p className="text-sm font-medium text-zinc-100">
-                  Matheus Lima
+                  {userContext?.userLogged?.name}
                 </p>
                 <p className="text-xs text-zinc-500">Plano Pro</p>
               </div>

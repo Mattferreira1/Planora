@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Sparkles,
@@ -14,12 +14,15 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { typeGoal } from "@/utils/types";
+import { UserContext } from "@/utils/contexts/userContext";
 
 export default function DashboardPage() {
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [plans, setPlans] = useState<typeGoal[]>([]);
   const [openedTaskId, setOpenedTaskId] = useState<number | null>(null);
+  const userContext = useContext(UserContext);
+  console.log("context atual:", userContext?.userLogged);
 
   const handleGeneratePlan = async (e: any) => {
     e.preventDefault();
