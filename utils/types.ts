@@ -15,7 +15,7 @@ export type typeGoal = {
   studyPlan: Array<typeStudyWeek>;
 };
 
-export type user = {
+export type TypeUser = {
   id?: string | number;
   name: string;
   email: string;
