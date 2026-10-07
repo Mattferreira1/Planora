@@ -16,7 +16,7 @@ import {
 import Link from "next/link";
 import { UserContext } from "@/utils/contexts/userContext";
 import { redirect } from "next/navigation";
-import { user } from "@/utils/types";
+import { TypeUser } from "@/utils/types";
 import FormInput from "./components/formInput";
 
 export default function RegisterPage() {
