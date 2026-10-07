@@ -49,7 +49,7 @@ export default function RegisterPage() {
     setTimeout(() => setIsLoading(false), 2000);
   };
   function validateData(
-    RegisterInputData: user & { confirmPassword: string },
+    RegisterInputData: TypeUser & { confirmPassword: string },
   ): boolean {
     const userRegisterData = RegisterInputData;
     if (userRegisterData.password !== userRegisterData.confirmPassword) {
